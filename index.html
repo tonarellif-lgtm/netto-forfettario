@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calcolo netto regime forfettario 2026 | Netto Forfettario</title>
+<meta name="description" content="Calcola gratis quanto ti resta netto con la partita IVA forfettaria nel 2026: coefficiente ATECO, contributi INPS (Gestione Separata, artigiani, commercianti) e imposta al 5% o 15%.">
+<meta property="og:title" content="Netto Forfettario – calcolo netto partita IVA 2026">
+<meta property="og:description" content="Quanto ti resta in tasca col forfettario, e quanto accantonare di ogni fattura.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="it_IT">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Public+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: modulo fiscale a due colonne — a sinistra i dati di input come righe di un quadro, a destra il risultato "da accantonare" e il netto. */
+:root{
+  --bg:#eef1f4; --paper:#ffffff; --ink:#16202b; --muted:#5b6773; --line:#d3dae1;
+  --accent:#1f4fbf; --accent-soft:#e3ebfb; --tax:#c2410c; --inps:#7c3aed; --net:#0f766e; --warn:#a16207; --warn-bg:#fdf3d7;
+  --f-display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141a; --paper:#18202a; --ink:#e6ecf2; --muted:#9aa7b4; --line:#2c3846;
+  --accent:#7aa2ff; --accent-soft:#1d2a45; --tax:#fb923c; --inps:#b79bff; --net:#2dd4bf; --warn:#facc15; --warn-bg:#3a3010; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --paper:#18202a; --ink:#e6ecf2; --muted:#9aa7b4; --line:#2c3846;
+  --accent:#7aa2ff; --accent-soft:#1d2a45; --tax:#fb923c; --inps:#b79bff; --net:#2dd4bf; --warn:#facc15; --warn-bg:#3a3010; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);padding-inline:16px;padding-block:28px 48px}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:8px}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 clamp(30px,5vw,46px)/1.05 var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);max-width:62ch}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px;display:grid;gap:18px;min-width:0}
+.panel h2{font:700 18px var(--f-display);margin:0}
+.field{display:grid;gap:6px}
+label,.lbl{font-weight:600;font-size:14px}
+.hint{font-size:13px;color:var(--muted)}
+.money{position:relative}
+.money span{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);color:var(--muted)}
+input[type=number],select{width:100%;font:500 16px var(--f-mono);padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.money input{padding-left:30px}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{flex:1 1 auto;font:600 14px var(--f-body);padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.check input{margin-top:4px;accent-color:var(--accent)}
+.result{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+.big{display:grid;gap:4px}
+.big .v{font:700 clamp(34px,6vw,48px)/1 var(--f-display);color:var(--net);font-variant-numeric:tabular-nums}
+.big .s{color:var(--muted);font-size:14px}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--line)}
+.bar i{display:block;height:100%;transition:width .25s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.rows{display:grid;margin:0;border-top:1px solid var(--line)}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+.rows dt{color:var(--muted)} .rows dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+.rows .tot dt{color:var(--ink);font-weight:600} .rows .tot dd{font-weight:500}
+.save{background:var(--accent-soft);border-radius:8px;padding:14px 16px;font-size:15px}
+.save strong{font:700 22px var(--f-display);color:var(--accent);font-variant-numeric:tabular-nums}
+.warn{background:var(--warn-bg);color:var(--ink);border-left:3px solid var(--warn);padding:10px 14px;border-radius:4px;font-size:14px}
+.explain{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
+.explain article{min-width:0}
+.explain h3{font:700 17px var(--f-display);margin:0 0 6px}
+.explain p,.explain ol{margin:0;color:var(--muted);font-size:15px;max-width:65ch}
+.explain ol{padding-left:20px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+.tw{overflow-x:auto}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+td:last-child,th:last-child{text-align:right;font-family:var(--f-mono)}
+footer{font-size:13px;color:var(--muted);display:grid;gap:6px;max-width:80ch}
+footer a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+body{margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Regime forfettario · valori <span data-cfg="anno"></span></div>
+    <h1>Quanto ti resta in tasca con la partita IVA forfettaria</h1>
+    <p class="lede">Inserisci quanto incassi in un anno e il tipo di attività. Il calcolo applica coefficiente di redditività, contributi INPS e imposta sostitutiva, e ti dice quanto accantonare di ogni fattura.</p>
+  </header>
+
+  <div class="grid">
+    <form class="panel" id="f" autocomplete="off">
+      <h2>I tuoi dati</h2>
+      <div class="field">
+        <label for="incassi">Incassi annui</label>
+        <div class="money"><span>€</span><input type="number" id="incassi" min="0" step="500" value="30000" inputmode="decimal"></div>
+        <div class="hint">Conta quello che incassi nell'anno (criterio di cassa), non quello che fatturi.</div>
+      </div>
+      <div class="field">
+        <label for="ateco">Attività (gruppo ATECO)</label>
+        <select id="ateco">
+          <option value="0.78" selected>Professionisti, consulenti, IT, sanità, istruzione · 78%</option>
+          <option value="0.67">Altre attività economiche (artigiani, servizi) · 67%</option>
+          <option value="0.86">Costruzioni e attività immobiliari · 86%</option>
+          <option value="0.62">Intermediari del commercio · 62%</option>
+          <option value="0.54">Commercio ambulante di altri prodotti · 54%</option>
+          <option value="0.40">Commercio, alimentari, alberghi e ristoranti · 40%</option>
+        </select>
+        <div class="hint">Il coefficiente è la quota degli incassi che il fisco considera reddito.</div>
+      </div>
+      <div class="field">
+        <span class="lbl" id="l-ali">Aliquota imposta sostitutiva</span>
+        <div class="seg" role="group" aria-labelledby="l-ali">
+          <button type="button" id="ali15" data-ali="0.15" aria-pressed="true">15% ordinaria</button>
+          <button type="button" id="ali5" data-ali="0.05" aria-pressed="false">5% primi 5 anni</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="inps">Cassa previdenziale</label>
+        <select id="inps">
+          <option value="gs" selected data-tpl="INPS Gestione Separata ({gs})">INPS Gestione Separata</option>
+          <option value="art" data-tpl="INPS Artigiani (minimale + {aliqArt})">INPS Artigiani</option>
+          <option value="com" data-tpl="INPS Commercianti (minimale + {aliqCom})">INPS Commercianti</option>
+        </select>
+      </div>
+      <label class="check" id="rid-wrap" hidden><input type="checkbox" id="rid"> <span>Ho chiesto la riduzione del <span data-cfg="riduzione"></span> dei contributi riservata ai forfettari</span></label>
+    </form>
+
+    <section class="panel result" aria-live="polite">
+      <h2>Il risultato</h2>
+      <div class="big">
+        <div class="v" id="nettoM">–</div>
+        <div class="s">netto al mese, su 12 mensilità · <span id="nettoA">–</span> all'anno</div>
+      </div>
+      <div>
+        <div class="bar" aria-hidden="true"><i id="bNet" style="background:var(--net)"></i><i id="bInps" style="background:var(--inps)"></i><i id="bTax" style="background:var(--tax)"></i></div>
+      </div>
+      <div class="legend"><span><b style="background:var(--net)"></b>Netto</span><span><b style="background:var(--inps)"></b>Contributi INPS</span><span><b style="background:var(--tax)"></b>Imposta sostitutiva</span></div>
+      <dl class="rows">
+        <div><dt>Incassi</dt><dd id="rInc">–</dd></div>
+        <div><dt>Reddito forfettario (× <span id="rCoef">78%</span>)</dt><dd id="rRed">–</dd></div>
+        <div><dt>Contributi INPS</dt><dd id="rInps">–</dd></div>
+        <div><dt>Base imponibile (reddito − contributi)</dt><dd id="rBase">–</dd></div>
+        <div><dt>Imposta sostitutiva (<span id="rAli">15%</span>)</dt><dd id="rTax">–</dd></div>
+        <div class="tot"><dt>Netto annuo</dt><dd id="rNet">–</dd></div>
+      </dl>
+      <div class="save">Accantona <strong id="pct">–</strong> di ogni incasso per tasse e contributi.</div>
+      <div class="warn" id="warn" hidden></div>
+    </section>
+  </div>
+
+  <section class="explain" aria-label="Come funziona">
+    <article>
+      <h3>Come si fa il calcolo</h3>
+      <ol>
+        <li>Incassi × coefficiente di redditività = reddito forfettario.</li>
+        <li>Sul reddito si calcolano i contributi INPS.</li>
+        <li>I contributi versati si sottraggono dal reddito: sul resto paghi il 15% (o il 5%).</li>
+        <li>Netto = incassi − contributi − imposta.</li>
+      </ol>
+    </article>
+    <article>
+      <h3>Artigiani e commercianti</h3>
+      <p>Pagano un contributo fisso sul reddito minimale di <span data-cfg="minimale"></span> anche se guadagnano meno: <span data-cfg="fissoArt"></span> gli artigiani, <span data-cfg="fissoCom"></span> i commercianti. Sopra il minimale si aggiunge il <span data-cfg="aliqArt"></span> (<span data-cfg="aliqCom"></span> commercianti), che sale di un punto oltre <span data-cfg="fascia"></span>.</p>
+    </article>
+    <article>
+      <h3>Valori usati</h3>
+      <div class="tw"><table>
+        <tr><th>Voce</th><th data-cfg="anno"></th></tr>
+        <tr><td>Limite incassi</td><td data-cfg="limite"></td></tr>
+        <tr><td>Gestione Separata</td><td data-cfg="gs"></td></tr>
+        <tr><td>Minimale art./comm.</td><td data-cfg="minimale"></td></tr>
+        <tr><td>Massimale contributivo</td><td data-cfg="massimale"></td></tr>
+      </table></div>
+    </article>
+  </section>
+
+  <footer>
+    <p>Stima indicativa con le regole <span data-cfg="anno"></span> (<span data-cfg="fonti"></span>). Semplifica alcuni aspetti: considera i contributi deducibili nello stesso anno, non calcola acconti, rivalsa INPS né casse professionali con albo. Per decisioni concrete senti un commercialista.</p>
+  </footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const eur=n=>n.toLocaleString('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+/* ===== VALORI ANNUALI: aggiornare solo questo blocco (e <title>/meta nella versione pubblicata) ===== */
+const CFG={
+  anno:2026,
+  fonti:'Legge di Bilancio 2026, circolari INPS n. 8 e n. 14 del 2026',
+  limite:85000,        // limite incassi forfettario
+  uscitaImmediata:100000, // sopra questa soglia si esce in corso d'anno
+  gs:0.2607,           // aliquota Gestione Separata
+  minimale:18808,      // reddito minimale artigiani/commercianti
+  fascia:56224,        // oltre questa soglia +1 punto
+  massimale:122295,    // massimale contributivo
+  fissoArt:4521.36,    // contributo fisso artigiani
+  fissoCom:4611.64,    // contributo fisso commercianti
+  aliqArt:0.24, aliqCom:0.2448, riduzione:0.35
+};
+/* ===================================================================================================== */
+const MIN=CFG.minimale, FASCIA=CFG.fascia, MAX=CFG.massimale;
+const fmtCfg=(k,v)=>typeof v!=='number'?v:k==='anno'?String(v):v<1?(v*100).toLocaleString('it-IT',{maximumFractionDigits:2})+'%':v.toLocaleString('it-IT',{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2})+' €';
+document.querySelectorAll('[data-cfg]').forEach(el=>el.textContent=fmtCfg(el.dataset.cfg,CFG[el.dataset.cfg]));
+document.querySelectorAll('[data-tpl]').forEach(el=>el.textContent=el.dataset.tpl.replace(/\{(\w+)\}/g,(_,k)=>fmtCfg(k,CFG[k])));
+let ali=0.15;
+
+function contributi(red,tipo,rid){
+  if(tipo==='gs') return Math.min(red,MAX)*CFG.gs;
+  const fisso = tipo==='art'?CFG.fissoArt:CFG.fissoCom, a1 = tipo==='art'?CFG.aliqArt:CFG.aliqCom;
+  const r=Math.min(red,MAX);
+  let c=fisso + Math.max(0,Math.min(r,FASCIA)-MIN)*a1 + Math.max(0,r-FASCIA)*(a1+0.01);
+  return rid? c*(1-CFG.riduzione) : c;
+}
+function calcola(inc,coef,aliq,tipo,rid){
+  const red=inc*coef, inps=contributi(red,tipo,rid), base=Math.max(0,red-inps), tax=base*aliq;
+  return {red,inps,base,tax,net:inc-inps-tax};
+}
+function render(){
+  const inc=Math.max(0,+$('incassi').value||0), coef=+$('ateco').value, tipo=$('inps').value;
+  $('rid-wrap').hidden = tipo==='gs';
+  const rid = tipo!=='gs' && $('rid').checked;
+  const r=calcola(inc,coef,ali,tipo,rid);
+  $('nettoM').textContent=eur(r.net/12); $('nettoA').textContent=eur(r.net);
+  $('rInc').textContent=eur(inc); $('rCoef').textContent=Math.round(coef*100)+'%';
+  $('rRed').textContent=eur(r.red); $('rInps').textContent='− '+eur(r.inps);
+  $('rBase').textContent=eur(r.base); $('rAli').textContent=Math.round(ali*100)+'%';
+  $('rTax').textContent='− '+eur(r.tax); $('rNet').textContent=eur(r.net);
+  const p=inc>0?(r.inps+r.tax)/inc:0;
+  $('pct').textContent=inc>0?Math.round(p*100)+'%':'–';
+  const pos=Math.max(0,r.net);
+  const tot=pos+r.inps+r.tax||1;
+  $('bNet').style.width=(pos/tot*100)+'%'; $('bInps').style.width=(r.inps/tot*100)+'%'; $('bTax').style.width=(r.tax/tot*100)+'%';
+  const w=$('warn'); let msg='';
+  if(inc>CFG.uscitaImmediata) msg='Sopra '+fmtCfg('x',CFG.uscitaImmediata)+' di incassi esci dal forfettario già dall\'anno in corso: da quel momento si applica il regime ordinario.';
+  else if(inc>CFG.limite) msg='Sopra '+fmtCfg('x',CFG.limite)+' resti forfettario per quest\'anno, ma dall\'anno prossimo passi al regime ordinario.';
+  else if(r.net<0) msg='Con questi incassi i contributi minimi superano il reddito: il risultato è negativo.';
+  w.textContent=msg; w.hidden=!msg;
+}
+document.querySelectorAll('[data-ali]').forEach(b=>b.addEventListener('click',()=>{
+  ali=+b.dataset.ali;
+  document.querySelectorAll('[data-ali]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  render();
+}));
+['incassi','ateco','inps','rid'].forEach(id=>$(id).addEventListener('input',render));
+$('f').addEventListener('submit',e=>e.preventDefault());
+render();
+</script>
+</body>
+</html>
