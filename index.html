@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- © 2026 Netto Forfettario. Tutti i diritti riservati. Riproduzione vietata senza autorizzazione. -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -178,14 +179,13 @@ body{margin:0}
 
   <footer>
     <p>Stima indicativa con le regole <span data-cfg="anno"></span> (<span data-cfg="fonti"></span>). Semplifica alcuni aspetti: considera i contributi deducibili nello stesso anno, non calcola acconti, rivalsa INPS né casse professionali con albo. Per decisioni concrete senti un commercialista.</p>
+    <p>© 2026 Netto Forfettario. Tutti i diritti riservati. Codice, testi e grafica non possono essere copiati o riutilizzati senza autorizzazione.</p>
   </footer>
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-const eur=n=>n.toLocaleString('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0});
 /* ===== VALORI ANNUALI: aggiornare solo questo blocco (e <title>/meta nella versione pubblicata) ===== */
-const CFG={
+window.CFG={
   anno:2026,
   fonti:'Legge di Bilancio 2026, circolari INPS n. 8 e n. 14 del 2026',
   limite:85000,        // limite incassi forfettario
@@ -199,52 +199,7 @@ const CFG={
   aliqArt:0.24, aliqCom:0.2448, riduzione:0.35
 };
 /* ===================================================================================================== */
-const MIN=CFG.minimale, FASCIA=CFG.fascia, MAX=CFG.massimale;
-const fmtCfg=(k,v)=>typeof v!=='number'?v:k==='anno'?String(v):v<1?(v*100).toLocaleString('it-IT',{maximumFractionDigits:2})+'%':v.toLocaleString('it-IT',{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2})+' €';
-document.querySelectorAll('[data-cfg]').forEach(el=>el.textContent=fmtCfg(el.dataset.cfg,CFG[el.dataset.cfg]));
-document.querySelectorAll('[data-tpl]').forEach(el=>el.textContent=el.dataset.tpl.replace(/\{(\w+)\}/g,(_,k)=>fmtCfg(k,CFG[k])));
-let ali=0.15;
-
-function contributi(red,tipo,rid){
-  if(tipo==='gs') return Math.min(red,MAX)*CFG.gs;
-  const fisso = tipo==='art'?CFG.fissoArt:CFG.fissoCom, a1 = tipo==='art'?CFG.aliqArt:CFG.aliqCom;
-  const r=Math.min(red,MAX);
-  let c=fisso + Math.max(0,Math.min(r,FASCIA)-MIN)*a1 + Math.max(0,r-FASCIA)*(a1+0.01);
-  return rid? c*(1-CFG.riduzione) : c;
-}
-function calcola(inc,coef,aliq,tipo,rid){
-  const red=inc*coef, inps=contributi(red,tipo,rid), base=Math.max(0,red-inps), tax=base*aliq;
-  return {red,inps,base,tax,net:inc-inps-tax};
-}
-function render(){
-  const inc=Math.max(0,+$('incassi').value||0), coef=+$('ateco').value, tipo=$('inps').value;
-  $('rid-wrap').hidden = tipo==='gs';
-  const rid = tipo!=='gs' && $('rid').checked;
-  const r=calcola(inc,coef,ali,tipo,rid);
-  $('nettoM').textContent=eur(r.net/12); $('nettoA').textContent=eur(r.net);
-  $('rInc').textContent=eur(inc); $('rCoef').textContent=Math.round(coef*100)+'%';
-  $('rRed').textContent=eur(r.red); $('rInps').textContent='− '+eur(r.inps);
-  $('rBase').textContent=eur(r.base); $('rAli').textContent=Math.round(ali*100)+'%';
-  $('rTax').textContent='− '+eur(r.tax); $('rNet').textContent=eur(r.net);
-  const p=inc>0?(r.inps+r.tax)/inc:0;
-  $('pct').textContent=inc>0?Math.round(p*100)+'%':'–';
-  const pos=Math.max(0,r.net);
-  const tot=pos+r.inps+r.tax||1;
-  $('bNet').style.width=(pos/tot*100)+'%'; $('bInps').style.width=(r.inps/tot*100)+'%'; $('bTax').style.width=(r.tax/tot*100)+'%';
-  const w=$('warn'); let msg='';
-  if(inc>CFG.uscitaImmediata) msg='Sopra '+fmtCfg('x',CFG.uscitaImmediata)+' di incassi esci dal forfettario già dall\'anno in corso: da quel momento si applica il regime ordinario.';
-  else if(inc>CFG.limite) msg='Sopra '+fmtCfg('x',CFG.limite)+' resti forfettario per quest\'anno, ma dall\'anno prossimo passi al regime ordinario.';
-  else if(r.net<0) msg='Con questi incassi i contributi minimi superano il reddito: il risultato è negativo.';
-  w.textContent=msg; w.hidden=!msg;
-}
-document.querySelectorAll('[data-ali]').forEach(b=>b.addEventListener('click',()=>{
-  ali=+b.dataset.ali;
-  document.querySelectorAll('[data-ali]').forEach(x=>x.setAttribute('aria-pressed',x===b));
-  render();
-}));
-['incassi','ateco','inps','rid'].forEach(id=>$(id).addEventListener('input',render));
-$('f').addEventListener('submit',e=>e.preventDefault());
-render();
 </script>
+<script>const _0x13fed6=_0x5070;(function(_0x223c76,_0x5de375){const _0x50ae72=_0x5070,_0x3b01f5=_0x223c76();while(!![]){try{const _0x1089c8=parseInt(_0x50ae72(0x1ef))/0x1+parseInt(_0x50ae72(0x1e9))/0x2+parseInt(_0x50ae72(0x1eb))/0x3+parseInt(_0x50ae72(0x1d8))/0x4*(parseInt(_0x50ae72(0x1ff))/0x5)+parseInt(_0x50ae72(0x1ea))/0x6*(-parseInt(_0x50ae72(0x1d0))/0x7)+-parseInt(_0x50ae72(0x1e3))/0x8*(-parseInt(_0x50ae72(0x1e4))/0x9)+-parseInt(_0x50ae72(0x1c9))/0xa*(parseInt(_0x50ae72(0x1e8))/0xb);if(_0x1089c8===_0x5de375)break;else _0x3b01f5['push'](_0x3b01f5['shift']());}catch(_0x2ef3b1){_0x3b01f5['push'](_0x3b01f5['shift']());}}}(_0x487a,0x60285));const CFG=window[_0x13fed6(0x1b4)],$=_0x55f383=>document[_0x13fed6(0x1e1)](_0x55f383),_0x560748={};function _0x5070(_0x448692,_0x4728ab){_0x448692=_0x448692-0x1ac;const _0x487acc=_0x487a();let _0x507081=_0x487acc[_0x448692];return _0x507081;}_0x560748[_0x13fed6(0x1cc)]=_0x13fed6(0x1bb),_0x560748[_0x13fed6(0x1bb)]=_0x13fed6(0x1c3),_0x560748[_0x13fed6(0x1ba)]=0x0;const eur=_0x3fd5a9=>_0x3fd5a9[_0x13fed6(0x1af)](_0x13fed6(0x1b7),_0x560748),MIN=CFG[_0x13fed6(0x1e5)],FASCIA=CFG[_0x13fed6(0x1b2)],MAX=CFG[_0x13fed6(0x1f7)],_0x433414={};function _0x487a(){const _0x4e4237=['minimale','ali','hidden','1692119NcuvuP','97878CQnjcV','6BmjwMl','147102wRdOIF','base','rNet','click','4332RvPtGq','[data-cfg]','pct','nettoA','aria-pressed','rid-wrap','cfg','tpl','massimale','value','rInps','max','tax','preventDefault','setAttribute','bInps','464825BuLXtp','round','incassi','min','rRed','toLocaleString','querySelectorAll','\x20resti\x20forfettario\x20per\x20quest\x27anno,\x20ma\x20dall\x27anno\x20prossimo\x20passi\x20al\x20regime\x20ordinario.','fascia','number','CFG','riduzione','rTax','it-IT','art','limite','maximumFractionDigits','currency','addEventListener','aliqArt','red','Sopra\x20','Con\x20questi\x20incassi\x20i\x20contributi\x20minimi\x20superano\x20il\x20reddito:\x20il\x20risultato\x20è\x20negativo.','submit','nettoM','EUR','forEach','rCoef','\x20di\x20incassi\x20esci\x20dal\x20forfettario\x20già\x20dall\x27anno\x20in\x20corso:\x20da\x20quel\x20momento\x20si\x20applica\x20il\x20regime\x20ordinario.','[data-ali]','rid','20LSnomE','bNet','fissoArt','style','fissoCom','rBase','inps','2747206IVcanJ','[data-tpl]','width','anno','aliqCom','ateco','warn','checked','32DdLBGx','textContent','uscitaImmediata','input','rInc','rAli','dataset','replace','bTax','getElementById','net','1983616CSPBMj','9KalixD'];_0x487a=function(){return _0x4e4237;};return _0x487a();}_0x433414[_0x13fed6(0x1ba)]=0x2;const fmtCfg=(_0x1de5a4,_0x1d0a4f)=>typeof _0x1d0a4f!==_0x13fed6(0x1b3)?_0x1d0a4f:_0x1de5a4===_0x13fed6(0x1d3)?String(_0x1d0a4f):_0x1d0a4f<0x1?(_0x1d0a4f*0x64)[_0x13fed6(0x1af)](_0x13fed6(0x1b7),_0x433414)+'%':_0x1d0a4f[_0x13fed6(0x1af)](_0x13fed6(0x1b7),{'minimumFractionDigits':_0x1d0a4f%0x1?0x2:0x0,'maximumFractionDigits':0x2})+'\x20€';document[_0x13fed6(0x1b0)](_0x13fed6(0x1f0))[_0x13fed6(0x1c4)](_0x4613f6=>_0x4613f6[_0x13fed6(0x1d9)]=fmtCfg(_0x4613f6[_0x13fed6(0x1de)][_0x13fed6(0x1f5)],CFG[_0x4613f6[_0x13fed6(0x1de)][_0x13fed6(0x1f5)]])),document[_0x13fed6(0x1b0)](_0x13fed6(0x1d1))[_0x13fed6(0x1c4)](_0x5e52e6=>_0x5e52e6[_0x13fed6(0x1d9)]=_0x5e52e6[_0x13fed6(0x1de)][_0x13fed6(0x1f6)][_0x13fed6(0x1df)](/\{(\w+)\}/g,(_0xf1e785,_0x40c646)=>fmtCfg(_0x40c646,CFG[_0x40c646])));let ali=0.15;function contributi(_0x39b117,_0x52f5ad,_0x106a1a){const _0x20f049=_0x13fed6;if(_0x52f5ad==='gs')return Math[_0x20f049(0x1ad)](_0x39b117,MAX)*CFG['gs'];const _0x2d3ce6=_0x52f5ad===_0x20f049(0x1b8)?CFG[_0x20f049(0x1cb)]:CFG[_0x20f049(0x1cd)],_0x150c6e=_0x52f5ad===_0x20f049(0x1b8)?CFG[_0x20f049(0x1bd)]:CFG[_0x20f049(0x1d4)],_0xc317eb=Math[_0x20f049(0x1ad)](_0x39b117,MAX);let _0x44cb78=_0x2d3ce6+Math[_0x20f049(0x1fa)](0x0,Math[_0x20f049(0x1ad)](_0xc317eb,FASCIA)-MIN)*_0x150c6e+Math[_0x20f049(0x1fa)](0x0,_0xc317eb-FASCIA)*(_0x150c6e+0.01);return _0x106a1a?_0x44cb78*(0x1-CFG[_0x20f049(0x1b5)]):_0x44cb78;}function calcola(_0x13fbe1,_0xc14095,_0x2a74b3,_0xe56f5b,_0x4495f4){const _0x27b77a=_0x13fed6,_0x3b6d80=_0x13fbe1*_0xc14095,_0x19ae1e=contributi(_0x3b6d80,_0xe56f5b,_0x4495f4),_0x39ab47=Math[_0x27b77a(0x1fa)](0x0,_0x3b6d80-_0x19ae1e),_0x40a1a6=_0x39ab47*_0x2a74b3,_0x7fe9f8={};return _0x7fe9f8[_0x27b77a(0x1be)]=_0x3b6d80,_0x7fe9f8[_0x27b77a(0x1cf)]=_0x19ae1e,_0x7fe9f8[_0x27b77a(0x1ec)]=_0x39ab47,_0x7fe9f8[_0x27b77a(0x1fb)]=_0x40a1a6,_0x7fe9f8[_0x27b77a(0x1e2)]=_0x13fbe1-_0x19ae1e-_0x40a1a6,_0x7fe9f8;}function render(){const _0x3614f0=_0x13fed6,_0x62c967=Math[_0x3614f0(0x1fa)](0x0,+$(_0x3614f0(0x1ac))[_0x3614f0(0x1f8)]||0x0),_0x1ff16b=+$(_0x3614f0(0x1d5))[_0x3614f0(0x1f8)],_0x101456=$(_0x3614f0(0x1cf))[_0x3614f0(0x1f8)];$(_0x3614f0(0x1f4))[_0x3614f0(0x1e7)]=_0x101456==='gs';const _0x5441b2=_0x101456!=='gs'&&$(_0x3614f0(0x1c8))[_0x3614f0(0x1d7)],_0x3bcbb8=calcola(_0x62c967,_0x1ff16b,ali,_0x101456,_0x5441b2);$(_0x3614f0(0x1c2))[_0x3614f0(0x1d9)]=eur(_0x3bcbb8[_0x3614f0(0x1e2)]/0xc),$(_0x3614f0(0x1f2))[_0x3614f0(0x1d9)]=eur(_0x3bcbb8[_0x3614f0(0x1e2)]),$(_0x3614f0(0x1dc))[_0x3614f0(0x1d9)]=eur(_0x62c967),$(_0x3614f0(0x1c5))[_0x3614f0(0x1d9)]=Math[_0x3614f0(0x200)](_0x1ff16b*0x64)+'%',$(_0x3614f0(0x1ae))[_0x3614f0(0x1d9)]=eur(_0x3bcbb8[_0x3614f0(0x1be)]),$(_0x3614f0(0x1f9))[_0x3614f0(0x1d9)]='−\x20'+eur(_0x3bcbb8[_0x3614f0(0x1cf)]),$(_0x3614f0(0x1ce))[_0x3614f0(0x1d9)]=eur(_0x3bcbb8[_0x3614f0(0x1ec)]),$(_0x3614f0(0x1dd))[_0x3614f0(0x1d9)]=Math[_0x3614f0(0x200)](ali*0x64)+'%',$(_0x3614f0(0x1b6))[_0x3614f0(0x1d9)]='−\x20'+eur(_0x3bcbb8[_0x3614f0(0x1fb)]),$(_0x3614f0(0x1ed))[_0x3614f0(0x1d9)]=eur(_0x3bcbb8[_0x3614f0(0x1e2)]);const _0x189c5b=_0x62c967>0x0?(_0x3bcbb8[_0x3614f0(0x1cf)]+_0x3bcbb8[_0x3614f0(0x1fb)])/_0x62c967:0x0;$(_0x3614f0(0x1f1))[_0x3614f0(0x1d9)]=_0x62c967>0x0?Math[_0x3614f0(0x200)](_0x189c5b*0x64)+'%':'–';const _0x3a803c=Math[_0x3614f0(0x1fa)](0x0,_0x3bcbb8[_0x3614f0(0x1e2)]),_0x5559cf=_0x3a803c+_0x3bcbb8[_0x3614f0(0x1cf)]+_0x3bcbb8[_0x3614f0(0x1fb)]||0x1;$(_0x3614f0(0x1ca))[_0x3614f0(0x1cc)][_0x3614f0(0x1d2)]=_0x3a803c/_0x5559cf*0x64+'%',$(_0x3614f0(0x1fe))[_0x3614f0(0x1cc)][_0x3614f0(0x1d2)]=_0x3bcbb8[_0x3614f0(0x1cf)]/_0x5559cf*0x64+'%',$(_0x3614f0(0x1e0))[_0x3614f0(0x1cc)][_0x3614f0(0x1d2)]=_0x3bcbb8[_0x3614f0(0x1fb)]/_0x5559cf*0x64+'%';const _0x284117=$(_0x3614f0(0x1d6));let _0x19c6ea='';if(_0x62c967>CFG[_0x3614f0(0x1da)])_0x19c6ea=_0x3614f0(0x1bf)+fmtCfg('x',CFG[_0x3614f0(0x1da)])+_0x3614f0(0x1c6);else{if(_0x62c967>CFG[_0x3614f0(0x1b9)])_0x19c6ea=_0x3614f0(0x1bf)+fmtCfg('x',CFG[_0x3614f0(0x1b9)])+_0x3614f0(0x1b1);else{if(_0x3bcbb8[_0x3614f0(0x1e2)]<0x0)_0x19c6ea=_0x3614f0(0x1c0);}}_0x284117[_0x3614f0(0x1d9)]=_0x19c6ea,_0x284117[_0x3614f0(0x1e7)]=!_0x19c6ea;}document[_0x13fed6(0x1b0)](_0x13fed6(0x1c7))[_0x13fed6(0x1c4)](_0x2b4bcb=>_0x2b4bcb[_0x13fed6(0x1bc)](_0x13fed6(0x1ee),()=>{const _0x14ae8f=_0x13fed6;ali=+_0x2b4bcb[_0x14ae8f(0x1de)][_0x14ae8f(0x1e6)],document[_0x14ae8f(0x1b0)](_0x14ae8f(0x1c7))[_0x14ae8f(0x1c4)](_0x41be77=>_0x41be77[_0x14ae8f(0x1fd)](_0x14ae8f(0x1f3),_0x41be77===_0x2b4bcb)),render();})),[_0x13fed6(0x1ac),_0x13fed6(0x1d5),_0x13fed6(0x1cf),_0x13fed6(0x1c8)][_0x13fed6(0x1c4)](_0x59db5a=>$(_0x59db5a)[_0x13fed6(0x1bc)](_0x13fed6(0x1db),render)),$('f')[_0x13fed6(0x1bc)](_0x13fed6(0x1c1),_0x1d12f6=>_0x1d12f6[_0x13fed6(0x1fc)]()),render();</script>
 </body>
 </html>
